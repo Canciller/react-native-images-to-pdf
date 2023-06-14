@@ -12,15 +12,16 @@ class ImagesPdf: NSObject {
     do {
       let createPdfOptions = try parseOptions(options: options)
       
-      let imagePaths = createPdfOptions.imagePaths
+      //let imagePaths = createPdfOptions.imagePaths
       let outputDirectory = createPdfOptions.outputDirectory
       let outputFilename = createPdfOptions.outputFilename
+      let pages = createPdfOptions.pages
       
-      if imagePaths.isEmpty {
+      if pages.isEmpty {
         throw CreatePdfError.imagePathsIsEmpty
       }
       
-      let data = try renderPdfData(imagePaths)
+      let data = try renderPdfData(pages)
       
       let outputUrl = try writePdfFile(data: data,
                                        outputDirectory: outputDirectory,
@@ -37,7 +38,7 @@ class ImagesPdf: NSObject {
              nil)
     } catch CreatePdfError.outputDirectoryDoesNotExist {
       reject(E_OUTPUT_DIRECTORY_DOES_NOT_EXIST,
-             "outputDirectory does not exists.",
+             "outputDirectory does not exist.",
              nil)
     } catch CreatePdfError.pdfPageCreateError(let error) {
       reject(E_PDF_PAGE_CREATE_ERROR,
@@ -54,13 +55,13 @@ class ImagesPdf: NSObject {
     }
   }
   
-  func renderPdfData(_ imagePaths: [String]) throws -> Data {
+  func renderPdfData(_ pages: [Page]) throws -> Data {
     let renderer = UIGraphicsPDFRenderer()
     var pageError: Error? = nil
     
     let data = renderer.pdfData {(context) in
-      for imagePath in imagePaths {
-        let imageUrl = buildUrl(paths: [imagePath])!
+      for page in pages {
+        let imageUrl = buildUrl(paths: [page.imagePath])!
         var image: UIImage? = nil
         
         do {
@@ -72,9 +73,17 @@ class ImagesPdf: NSObject {
         }
         
         if let image = image {
-          let bounds = CGRect(x: 0, y: 0, width: image.size.width, height: image.size.height)
+          let width = page.width ?? image.size.width
+          let height = page.height ?? image.size.height
+          
+          let bounds = CGRect(x: 0, y: 0, width: width, height: height)
           context.beginPage(withBounds: bounds, pageInfo: [:])
-          image.draw(at: .zero)
+          
+          let scaledImage = scale(image, targetSize: CGSize(width: bounds.width, height: bounds.height), fit: page.imageFit)
+          
+          if let scaledImage = scaledImage {
+            scaledImage.draw(at: .zero)
+          }
         }
       }
     }
@@ -155,5 +164,52 @@ class ImagesPdf: NSObject {
     let pdfCreateOptions = try JSONDecoder().decode(CreatePdfOptions.self, from: jsonData)
     
     return pdfCreateOptions
+  }
+  
+  func scale(_ image: UIImage, targetSize: CGSize, fit: ImageFit?) -> UIImage? {
+    let fit = fit ?? .none
+    
+    switch fit {
+    case .none:
+      return image
+      
+    case .contain, .cover:
+      let widthRatio = targetSize.width / image.size.width
+      let heightRatio = targetSize.height / image.size.height
+      let scaleFactor: CGFloat
+      
+      if fit == .contain {
+        scaleFactor = min(widthRatio, heightRatio)
+      } else {
+        scaleFactor = max(widthRatio, heightRatio)
+      }
+      
+      let scaledSize = CGSize(
+        width: image.size.width * scaleFactor,
+        height: image.size.height * scaleFactor
+      )
+      
+      let origin = CGPoint(
+        x: (targetSize.width - scaledSize.width) / 2.0,
+        y: (targetSize.height - scaledSize.height) / 2.0
+      )
+      
+      UIGraphicsBeginImageContextWithOptions(targetSize, false, 0.0)
+      defer { UIGraphicsEndImageContext() }
+      
+      image.draw(in: CGRect(origin: origin, size: scaledSize))
+      let newImage = UIGraphicsGetImageFromCurrentImageContext()
+      
+      return newImage
+      
+    case .fill:
+      UIGraphicsBeginImageContextWithOptions(targetSize, false, 0.0)
+      defer { UIGraphicsEndImageContext() }
+      
+      image.draw(in: CGRect(origin: .zero, size: targetSize))
+      let newImage = UIGraphicsGetImageFromCurrentImageContext()
+      
+      return newImage
+    }
   }
 }
