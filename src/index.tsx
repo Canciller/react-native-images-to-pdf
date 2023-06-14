@@ -17,10 +17,20 @@ const ImagesPdf = NativeModules.ImagesPdf
       }
     );
 
+export type ImageFit = 'none' | 'fill' | 'contain' | 'cover';
+
+export type Page = {
+  imagePath: string;
+  imageFit?: ImageFit;
+  width?: number;
+  height?: number;
+};
+
 export interface CreatePdfOptions {
   imagePaths: string[];
   outputDirectory: string;
   outputFilename: string;
+  pages: Page[];
 }
 
 export function createPdf(options: CreatePdfOptions): Promise<string> {
