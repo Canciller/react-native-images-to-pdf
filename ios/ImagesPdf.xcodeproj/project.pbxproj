@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		527793C229B68D9100DA97C8 /* CreatePdfOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527793C129B68D8700DA97C8 /* CreatePdfOptions.swift */; };
 		527793C629B6E17300DA97C8 /* CreatePdfError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 527793C529B6E17300DA97C8 /* CreatePdfError.swift */; };
+		528FC83B2A3A80D400B91589 /* UIImage+Scaling.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528FC83A2A3A80D400B91589 /* UIImage+Scaling.swift */; };
 		F4FF95D7245B92E800C19C63 /* ImagesPdf.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4FF95D6245B92E800C19C63 /* ImagesPdf.swift */; };
 /* End PBXBuildFile section */
 
@@ -28,6 +29,7 @@
 		134814201AA4EA6300B7C361 /* libImagesPdf.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libImagesPdf.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		527793C129B68D8700DA97C8 /* CreatePdfOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePdfOptions.swift; sourceTree = "<group>"; };
 		527793C529B6E17300DA97C8 /* CreatePdfError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CreatePdfError.swift; sourceTree = "<group>"; };
+		528FC83A2A3A80D400B91589 /* UIImage+Scaling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Scaling.swift"; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* ImagesPdf.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImagesPdf.m; sourceTree = "<group>"; };
 		F4FF95D5245B92E700C19C63 /* ImagesPdf-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ImagesPdf-Bridging-Header.h"; sourceTree = "<group>"; };
 		F4FF95D6245B92E800C19C63 /* ImagesPdf.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagesPdf.swift; sourceTree = "<group>"; };
@@ -55,6 +57,7 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				528FC83A2A3A80D400B91589 /* UIImage+Scaling.swift */,
 				527793C529B6E17300DA97C8 /* CreatePdfError.swift */,
 				527793C129B68D8700DA97C8 /* CreatePdfOptions.swift */,
 				F4FF95D6245B92E800C19C63 /* ImagesPdf.swift */,
@@ -122,6 +125,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F4FF95D7245B92E800C19C63 /* ImagesPdf.swift in Sources */,
+				528FC83B2A3A80D400B91589 /* UIImage+Scaling.swift in Sources */,
 				527793C629B6E17300DA97C8 /* CreatePdfError.swift in Sources */,
 				527793C229B68D9100DA97C8 /* CreatePdfOptions.swift in Sources */,
 			);

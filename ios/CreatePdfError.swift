@@ -11,5 +11,5 @@ enum CreatePdfError: Error {
   case pdfWriteError(error: Error)
   case outputDirectoryDoesNotExist
   case outputDirectoryIsNotWritable
-  case imagePathsIsEmpty
+  case pagesIsEmpty
 }

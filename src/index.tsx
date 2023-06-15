@@ -27,7 +27,6 @@ export type Page = {
 };
 
 export interface CreatePdfOptions {
-  imagePaths: string[];
   outputDirectory: string;
   outputFilename: string;
   pages: Page[];
