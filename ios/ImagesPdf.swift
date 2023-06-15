@@ -5,7 +5,7 @@ class ImagesPdf: NSObject {
   let E_PDF_PAGE_CREATE_ERROR = "PDF_PAGE_CREATE_ERROR"
   let E_OUTPUT_DIRECTORY_DOES_NOT_EXIST = "OUTPUT_DIRECTORY_DOES_NOT_EXIST"
   let E_OUTPUT_DIRECTORY_IS_NOT_WRITABLE = "OUTPUT_DIRECTORY_IS_NOT_WRITABLE"
-  let E_PAGES_IS_EMPTY = "PAGES_IS_EMPTY"
+  let E_NO_IMAGES_PROVIDED = "NO_IMAGES_PROVIDED"
   
   @objc
   func createPdf(_ options: NSDictionary, resolver resolve:RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
@@ -17,7 +17,7 @@ class ImagesPdf: NSObject {
       let pages = createPdfOptions.pages
       
       if pages.isEmpty {
-        throw CreatePdfError.pagesIsEmpty
+        throw CreatePdfError.noImagesProvided
       }
       
       let data = try renderPdfData(pages)
@@ -27,9 +27,9 @@ class ImagesPdf: NSObject {
                                        outputFilename: outputFilename)
       
       resolve(outputUrl.absoluteString)
-    } catch CreatePdfError.pagesIsEmpty {
-      reject(E_PAGES_IS_EMPTY,
-             "pages is empty.",
+    } catch CreatePdfError.noImagesProvided {
+      reject(E_NO_IMAGES_PROVIDED,
+             "No images provided.",
              nil)
     } catch CreatePdfError.outputDirectoryIsNotWritable {
       reject(E_OUTPUT_DIRECTORY_IS_NOT_WRITABLE,

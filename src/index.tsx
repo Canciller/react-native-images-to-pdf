@@ -26,14 +26,40 @@ export type Page = {
   height?: number;
 };
 
-export interface CreatePdfOptions {
-  outputDirectory: string;
-  outputFilename: string;
-  pages: Page[];
-}
+export type CreatePdfOptions =
+  | {
+      outputDirectory: string;
+      outputFilename: string;
+      pages: Array<Page | string>;
+      imagePaths?: undefined;
+    }
+  | {
+      outputDirectory: string;
+      outputFilename: string;
+      pages?: undefined;
+      /**
+       * @deprecated Use the `pages` property instead.
+       */
+      imagePaths: string[];
+    };
 
 export function createPdf(options: CreatePdfOptions): Promise<string> {
-  return ImagesPdf.createPdf(options);
+  const { pages, imagePaths, ...opts } = options;
+
+  const mappedPages = (imagePaths || pages || []).map<Page>((e) => {
+    if (typeof e === 'string') {
+      return {
+        imagePath: e,
+      };
+    }
+
+    return e;
+  });
+
+  return ImagesPdf.createPdf({
+    ...opts,
+    pages: mappedPages,
+  });
 }
 
 export function getDocumentsDirectory(): Promise<string> {
