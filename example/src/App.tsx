@@ -74,6 +74,7 @@ export default function App() {
       <TextInput
         style={styles.input}
         placeholder="Page width"
+        keyboardType="numeric"
         defaultValue={width ? width.toString() : ''}
         onChangeText={(text) => {
           const n = parseFloat(text);
@@ -83,6 +84,7 @@ export default function App() {
       <TextInput
         style={styles.input}
         placeholder="Page height"
+        keyboardType="numeric"
         defaultValue={height ? height.toString() : ''}
         onChangeText={(text) => {
           const n = parseFloat(text);
@@ -108,18 +110,28 @@ export default function App() {
         }}
       />
 
-      <TouchableOpacity style={styles.button} onPress={selectImages}>
-        <Text style={styles.buttonText}>Press to select images</Text>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={selectImages}
+        disabled={isLoading}
+      >
+        <Text style={styles.buttonText}>
+          {isLoading ? 'Loading...' : 'Press to select images'}
+        </Text>
       </TouchableOpacity>
 
-      <Text>Page width: {width ?? 'undefined'}</Text>
-      <Text>Page height: {height ?? 'undefined'}</Text>
-      <Text>Image fit: {imageFit ?? 'undefined'}</Text>
-      <Text style={styles.text}>Output file name: {outputFilename}</Text>
-
-      {isLoading ? (
-        <Text style={styles.loadingText}>Creating PDF document...</Text>
-      ) : null}
+      <Text>
+        <Text style={styles.bold}>Page width:</Text> {width ?? 'image width'}
+      </Text>
+      <Text>
+        <Text style={styles.bold}>Page height:</Text> {height ?? 'image height'}
+      </Text>
+      <Text>
+        <Text style={styles.bold}>Image fit:</Text> {imageFit ?? 'none'}
+      </Text>
+      <Text>
+        <Text style={styles.bold}>Output file name:</Text> {outputFilename}
+      </Text>
     </View>
   );
 }
@@ -128,21 +140,28 @@ const styles = StyleSheet.create({
   root: {
     flex: 1,
     justifyContent: 'center',
-    alignItems: 'center',
-  },
-  button: {
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: 'blue',
-  },
-  text: {
-    marginBottom: 20,
-  },
-  loadingText: {
-    color: 'gray',
+    padding: 20,
   },
   input: {
     marginBottom: 20,
+    borderWidth: 1,
+    borderColor: '#32a9d9',
+    borderRadius: 10,
+    paddingHorizontal: 10,
+  },
+  button: {
+    marginBottom: 20,
+    backgroundColor: '#32a9d9',
+    padding: 10,
+    borderRadius: 10,
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    textTransform: 'uppercase',
+    textAlign: 'center',
+  },
+  bold: {
+    fontWeight: 'bold',
   },
 });
