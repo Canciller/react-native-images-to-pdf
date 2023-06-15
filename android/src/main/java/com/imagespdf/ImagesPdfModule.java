@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Point;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
 import android.util.Log;
@@ -42,33 +43,51 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
   @ReactMethod
   public void createPdf(ReadableMap options, Promise promise) {
     try {
-      ReadableArray imagePaths = options.getArray("imagePaths");
+      // TODO: find a better way to get options.
       String outputDirectory = options.getString("outputDirectory");
       String outputFilename = options.getString("outputFilename");
+      ReadableArray pages = options.getArray("pages");
 
-      if (imagePaths.size() == 0) {
-        throw new Exception("imagePaths is empty.");
+      if (pages.size() == 0) {
+        throw new Exception("No images provided.");
       }
 
       PdfDocument pdfDocument = new PdfDocument();
 
       try {
-        for (int i = 0; i < imagePaths.size(); ++i) {
-          String imagePath = imagePaths.getString(i);
-          Bitmap bitmap = getBitmapFromPathOrUri(imagePath);
+        for (int i = 0; i < pages.size(); ++i) {
+          ReadableMap config = pages.getMap(i);
+          String imagePath = config.getString("imagePath");
 
-          if (bitmap == null) {
+          Bitmap image = getBitmapFromPathOrUri(imagePath);
+
+          if (image == null) {
             throw new Exception(imagePath + " cannot be decoded into a bitmap.");
           }
 
+          Double pageWidth = config.getDouble("width");
+          Integer width = pageWidth != null ? pageWidth.intValue() : image.getWidth();
+
+          Double pageHeight = config.getDouble("height");
+          Integer height = pageHeight != null ? pageHeight.intValue() : image.getHeight();
+
           PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo
-            .Builder(bitmap.getWidth(), bitmap.getHeight(), i + 1)
+            .Builder(width, height, i + 1)
             .create();
 
           PdfDocument.Page page = pdfDocument.startPage(pageInfo);
 
+          Bitmap scaledImage = image;
+
+          if(!width.equals(image.getWidth()) || !height.equals(image.getHeight())) {
+            String imageFit = config.getString("imageFit");
+            Point size = new Point(width, height);
+
+            scaledImage = ImageScaling.scale(image, size, imageFit);
+          }
+
           Canvas canvas = page.getCanvas();
-          canvas.drawBitmap(bitmap, 0, 0, null);
+          canvas.drawBitmap(scaledImage, 0, 0, null);
 
           pdfDocument.finishPage(page);
         }
@@ -106,7 +125,7 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
     promise.resolve(docsDir);
   }
 
-  public Uri writePdfDocument(PdfDocument pdfDocument, String outputDirectory, String outputFilename) throws IOException {
+  Uri writePdfDocument(PdfDocument pdfDocument, String outputDirectory, String outputFilename) throws IOException {
     OutputStream outputStream = null;
     Uri outputUri = null;
 
@@ -150,7 +169,7 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
     return outputUri;
   }
 
-  public Bitmap getBitmapFromPathOrUri(String pathOrUri) throws IOException {
+  Bitmap getBitmapFromPathOrUri(String pathOrUri) throws IOException {
     Bitmap bitmap = null;
     InputStream inputStream = null;
 
