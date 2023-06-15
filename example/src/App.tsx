@@ -13,10 +13,20 @@ import {
 
 export default function App() {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [outputFilename, setOutputFilename] = React.useState('Example.pdf');
-  const [width, setWidth] = React.useState(594);
-  const [height, setHeight] = React.useState(842);
-  const [imageFit, setImageFit] = React.useState<ImageFit>('cover');
+  const [width, setWidth] = React.useState<number | undefined>(594);
+  const [height, setHeight] = React.useState<number | undefined>(842);
+  const [imageFit, setImageFit] = React.useState<ImageFit | undefined>('cover');
+
+  const parts: string[] = [];
+  if (width) {
+    parts.push(`${width}w`);
+  }
+  if (height) {
+    parts.push(`${height}h`);
+  }
+  parts.push(imageFit ?? 'none');
+
+  const outputFilename = parts.join('-') + '.pdf';
 
   const selectImages = async () => {
     setIsLoading(true);
@@ -47,7 +57,6 @@ export default function App() {
         });
 
         await createPdf({
-          imagePaths: [],
           outputDirectory,
           outputFilename,
           pages,
@@ -62,36 +71,22 @@ export default function App() {
 
   return (
     <View style={styles.root}>
-      <TouchableOpacity style={styles.button} onPress={selectImages}>
-        <Text style={styles.buttonText}>Press to select images</Text>
-      </TouchableOpacity>
-
-      <TextInput
-        style={styles.input}
-        placeholder="Output file name"
-        value={outputFilename}
-        onChangeText={setOutputFilename}
-      />
       <TextInput
         style={styles.input}
         placeholder="Page width"
-        defaultValue={height ? height.toString() : ''}
+        defaultValue={width ? width.toString() : ''}
         onChangeText={(text) => {
           const n = parseFloat(text);
-          if (!Number.isNaN(n)) {
-            setWidth(n);
-          }
+          setWidth(Number.isNaN(n) ? undefined : n);
         }}
       />
       <TextInput
         style={styles.input}
         placeholder="Page height"
-        defaultValue={width ? width.toString() : ''}
+        defaultValue={height ? height.toString() : ''}
         onChangeText={(text) => {
           const n = parseFloat(text);
-          if (!Number.isNaN(n)) {
-            setHeight(n);
-          }
+          setHeight(Number.isNaN(n) ? undefined : n);
         }}
       />
       <TextInput
@@ -106,12 +101,24 @@ export default function App() {
             case 'contain':
             case 'fill':
               setImageFit(f);
+              break;
+            default:
+              setImageFit(undefined);
           }
         }}
       />
 
+      <TouchableOpacity style={styles.button} onPress={selectImages}>
+        <Text style={styles.buttonText}>Press to select images</Text>
+      </TouchableOpacity>
+
+      <Text>Page width: {width ?? 'undefined'}</Text>
+      <Text>Page height: {height ?? 'undefined'}</Text>
+      <Text>Image fit: {imageFit ?? 'undefined'}</Text>
+      <Text style={styles.text}>Output file name: {outputFilename}</Text>
+
       {isLoading ? (
-        <Text style={styles.text}>Creating PDF document...</Text>
+        <Text style={styles.loadingText}>Creating PDF document...</Text>
       ) : null}
     </View>
   );
@@ -130,6 +137,9 @@ const styles = StyleSheet.create({
     color: 'blue',
   },
   text: {
+    marginBottom: 20,
+  },
+  loadingText: {
     color: 'gray',
   },
   input: {

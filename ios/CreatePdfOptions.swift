@@ -21,7 +21,6 @@ struct Page: Decodable {
 }
 
 struct CreatePdfOptions: Decodable {
-  let imagePaths: [String]
   let outputDirectory: String
   let outputFilename: String
   let pages: [Page]
