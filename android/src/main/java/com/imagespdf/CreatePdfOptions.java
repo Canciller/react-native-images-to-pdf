@@ -28,6 +28,14 @@ public class CreatePdfOptions {
     return options.getArray(key);
   }
 
+  private Integer getInt(ReadableMap options, String key) {
+    if(options.hasKey(key)) {
+      return options.getInt(key);
+    }
+
+    return null;
+  }
+
   private Page[] parsePages(ReadableArray pagesArray) {
     if (pagesArray == null) {
       throw new IllegalArgumentException("Invalid 'pages' argument. 'pages' cannot be null.");
@@ -37,9 +45,9 @@ public class CreatePdfOptions {
     for (int i = 0; i < pagesArray.size(); i++) {
       ReadableMap pageMap = pagesArray.getMap(i);
       String imagePath = pageMap.getString("imagePath");
-      double width = pageMap.getDouble("width");
-      double height = pageMap.getDouble("height");
-      int backgroundColor = pageMap.getInt("backgroundColor");
+      Integer width = getInt(pageMap, "width");
+      Integer height = getInt(pageMap, "height");
+      Integer backgroundColor = getInt(pageMap, "backgroundColor");
 
       ImageFit imageFit = parseImageFit(pageMap.getString("imageFit"));
 
@@ -60,15 +68,15 @@ public class CreatePdfOptions {
   public static class Page {
     public String imagePath;
     public ImageFit imageFit;
-    public Double width;
-    public Double height;
+    public Integer width;
+    public Integer height;
     public Integer backgroundColor;
 
     public Page(String imagePath,
                 ImageFit imageFit,
-                double width,
-                double height,
-                int backgroundColor) {
+                Integer width,
+                Integer height,
+                Integer backgroundColor) {
       this.imagePath = imagePath;
       this.imageFit = imageFit;
       this.width = width;

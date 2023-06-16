@@ -68,11 +68,11 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
             throw new Exception(imagePath + " cannot be decoded into a bitmap.");
           }
 
-          Double pageWidth = config.width;
-          Integer width = pageWidth != null ? pageWidth.intValue() : image.getWidth();
+          Integer pageWidth = config.width;
+          Integer width = pageWidth != null ? pageWidth : image.getWidth();
 
-          Double pageHeight = config.height;
-          Integer height = pageHeight != null ? pageHeight.intValue() : image.getHeight();
+          Integer pageHeight = config.height;
+          Integer height = pageHeight != null ? pageHeight : image.getHeight();
 
           PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo
             .Builder(width, height, i + 1)
