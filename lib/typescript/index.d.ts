@@ -1,9 +1,11 @@
+import type { ColorValue } from 'react-native';
 export type ImageFit = 'none' | 'fill' | 'contain' | 'cover';
 export type Page = {
     imagePath: string;
     imageFit?: ImageFit;
     width?: number;
     height?: number;
+    backgroundColor?: ColorValue;
 };
 export type CreatePdfOptions = {
     outputDirectory: string;
