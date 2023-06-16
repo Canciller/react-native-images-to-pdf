@@ -23,6 +23,8 @@ export type ImageFit = 'none' | 'fill' | 'contain' | 'cover';
 export type Page = {
   imagePath: string;
   imageFit?: ImageFit;
+  imageMaxWidth?: number;
+  imageMaxHeight?: number;
   width?: number;
   height?: number;
   backgroundColor?: ColorValue;

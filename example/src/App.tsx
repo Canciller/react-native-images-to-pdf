@@ -51,6 +51,8 @@ export default function App() {
         const pages = result.assets.map<Page>((asset) => ({
           imagePath: asset.uri as string,
           imageFit,
+          imageMaxWidth: 100,
+          imageMaxHeight: 50,
           width,
           height,
           backgroundColor,
