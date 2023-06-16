@@ -18,10 +18,20 @@ struct Page: Decodable {
   let imageFit: ImageFit?
   let width: Double?
   let height: Double?
+  let backgroundColor: Int?
 }
 
-struct CreatePdfOptions: Decodable {
+class CreatePdfOptions: Decodable {
   let outputDirectory: String
   let outputFilename: String
   let pages: [Page]
+  
+  init(_ options: NSDictionary) throws {
+    let jsonData = try JSONSerialization.data(withJSONObject: options, options: [])
+    let pdfCreateOptions = try JSONDecoder().decode(CreatePdfOptions.self, from: jsonData)
+    
+    self.outputDirectory = pdfCreateOptions.outputDirectory
+    self.outputFilename = pdfCreateOptions.outputFilename
+    self.pages = pdfCreateOptions.pages
+  }
 }

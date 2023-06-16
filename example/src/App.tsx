@@ -15,7 +15,7 @@ export default function App() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [width, setWidth] = React.useState<number | undefined>(594);
   const [height, setHeight] = React.useState<number | undefined>(842);
-  const [backgroundColor, setBackgroundColor] = React.useState('#fff');
+  const [backgroundColor, setBackgroundColor] = React.useState('red');
   const [imageFit, setImageFit] = React.useState<ImageFit | undefined>(
     'contain'
   );
@@ -96,11 +96,13 @@ export default function App() {
         placeholder="Page background color"
         value={backgroundColor}
         onChangeText={setBackgroundColor}
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
         placeholder="Image fit"
         defaultValue={imageFit}
+        autoCapitalize="none"
         onChangeText={(text) => {
           const f = text.toLowerCase();
           switch (f) {
