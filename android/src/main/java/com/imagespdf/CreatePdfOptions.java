@@ -37,26 +37,35 @@ public class CreatePdfOptions {
     for (int i = 0; i < pagesArray.size(); i++) {
       ReadableMap pageMap = pagesArray.getMap(i);
       String imagePath = pageMap.getString("imagePath");
-      String imageFit = pageMap.getString("imageFit");
       double width = pageMap.getDouble("width");
       double height = pageMap.getDouble("height");
       int backgroundColor = pageMap.getInt("backgroundColor");
 
-      parsedPages[i] = new Page(imagePath,imageFit, width, height, backgroundColor);
+      ImageFit imageFit = parseImageFit(pageMap.getString("imageFit"));
+
+      parsedPages[i] = new Page(imagePath, imageFit, width, height, backgroundColor);
     }
 
     return parsedPages;
   }
 
+  private ImageFit parseImageFit(String imageFitValue) {
+    try {
+      return imageFitValue == null ? ImageFit.NONE : ImageFit.valueOf(imageFitValue.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      throw new IllegalArgumentException("Invalid 'imageFit' value: " + imageFitValue);
+    }
+  }
+
   public static class Page {
     public String imagePath;
-    public String imageFit;
+    public ImageFit imageFit;
     public Double width;
     public Double height;
     public Integer backgroundColor;
 
     public Page(String imagePath,
-                String imageFit,
+                ImageFit imageFit,
                 double width,
                 double height,
                 int backgroundColor) {

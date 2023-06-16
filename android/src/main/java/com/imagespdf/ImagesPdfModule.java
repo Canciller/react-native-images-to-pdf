@@ -83,7 +83,7 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
           Bitmap scaledImage = image;
 
           if(!width.equals(image.getWidth()) || !height.equals(image.getHeight())) {
-            String imageFit = config.imageFit;
+            ImageFit imageFit = config.imageFit;
             Point size = new Point(width, height);
 
             scaledImage = ImageScaling.scale(image, size, imageFit);

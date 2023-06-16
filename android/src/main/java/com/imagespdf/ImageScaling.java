@@ -9,17 +9,15 @@ import android.graphics.Point;
 // TODO: ImagePosition
 
 public class ImageScaling {
-  public static Bitmap scale(Bitmap image, Point size, String fit) throws Exception {
-    String imageFit = fit == null ? "none" : fit;
-
-    switch (imageFit) {
-      case "none":
+  public static Bitmap scale(Bitmap image, Point size, ImageFit fit) throws Exception {
+    switch (fit) {
+      case NONE:
         return scaleWithNone(image, size);
-      case "contain":
+      case CONTAIN:
         return scaleWithContain(image, size);
-      case "cover":
+      case COVER:
         return scaleWithCover(image, size);
-      case "fill":
+      case FILL:
         return scaleWithFill(image, size);
       default:
         throw new Exception("Unknown scale fit: " + fit);
