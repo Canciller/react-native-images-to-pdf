@@ -10,7 +10,7 @@ class ImagesPdf: NSObject {
   @objc
   func createPdf(_ options: NSDictionary, resolver resolve:RCTPromiseResolveBlock, rejecter reject: RCTPromiseRejectBlock) {
     do {
-      let createPdfOptions = try parseOptions(options: options)
+      let createPdfOptions = try CreatePdfOptions(options)
       
       let outputDirectory = createPdfOptions.outputDirectory
       let outputFilename = createPdfOptions.outputFilename
@@ -77,6 +77,13 @@ class ImagesPdf: NSObject {
           
           let pageBounds = CGRect(x: 0, y: 0, width: width, height: height)
           context.beginPage(withBounds: pageBounds, pageInfo: [:])
+          
+          
+          if let backgroudColorInt = page.backgroundColor {
+            let backgroundColor = createUIColor(from: backgroudColorInt).cgColor
+            context.cgContext.setFillColor(backgroundColor)
+            context.cgContext.fill(pageBounds)
+          }
           
           var scaledImage: UIImage?
           if width != image.size.width || height != image.size.height {
@@ -163,11 +170,12 @@ class ImagesPdf: NSObject {
     return docsDir
   }
   
-  func parseOptions(options: NSDictionary) throws -> CreatePdfOptions {
-    let jsonData = try JSONSerialization.data(withJSONObject: options, options: [])
-
-    let pdfCreateOptions = try JSONDecoder().decode(CreatePdfOptions.self, from: jsonData)
+  func createUIColor(from color: Int) -> UIColor {
+    let red = CGFloat((color >> 16) & 0xFF) / 255.0
+    let green = CGFloat((color >> 8) & 0xFF) / 255.0
+    let blue = CGFloat(color & 0xFF) / 255.0
+    let alpha = CGFloat((color >> 24) & 0xFF) / 255.0
     
-    return pdfCreateOptions
+    return UIColor(red: red, green: green, blue: blue, alpha: alpha)
   }
 }

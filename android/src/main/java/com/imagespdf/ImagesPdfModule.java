@@ -90,6 +90,9 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
           }
 
           Canvas canvas = page.getCanvas();
+          if(config.backgroundColor != null) {
+            canvas.drawColor(config.backgroundColor);
+          }
           canvas.drawBitmap(scaledImage, 0, 0, null);
 
           pdfDocument.finishPage(page);

@@ -40,8 +40,9 @@ public class CreatePdfOptions {
       String imageFit = pageMap.getString("imageFit");
       double width = pageMap.getDouble("width");
       double height = pageMap.getDouble("height");
+      int backgroundColor = pageMap.getInt("backgroundColor");
 
-      parsedPages[i] = new Page(imagePath, imageFit, width, height);
+      parsedPages[i] = new Page(imagePath,imageFit, width, height, backgroundColor);
     }
 
     return parsedPages;
@@ -50,14 +51,20 @@ public class CreatePdfOptions {
   public static class Page {
     public String imagePath;
     public String imageFit;
-    public double width;
-    public double height;
+    public Double width;
+    public Double height;
+    public Integer backgroundColor;
 
-    public Page(String imagePath, String imageFit, double width, double height) {
+    public Page(String imagePath,
+                String imageFit,
+                double width,
+                double height,
+                int backgroundColor) {
       this.imagePath = imagePath;
       this.imageFit = imageFit;
       this.width = width;
       this.height = height;
+      this.backgroundColor = backgroundColor;
     }
   }
 }
