@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import javax.annotation.Nullable;
+
 @ReactModule(name = ImagesPdfModule.NAME)
 public class ImagesPdfModule extends ReactContextBaseJavaModule {
   public static final String NAME = "ImagesPdf";
@@ -41,23 +43,24 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
   }
 
   @ReactMethod
-  public void createPdf(ReadableMap options, Promise promise) {
+  public void createPdf(ReadableMap optionsMap, Promise promise) {
     try {
-      // TODO: find a better way to get options.
-      String outputDirectory = options.getString("outputDirectory");
-      String outputFilename = options.getString("outputFilename");
-      ReadableArray pages = options.getArray("pages");
+      CreatePdfOptions options = new CreatePdfOptions(optionsMap);
 
-      if (pages.size() == 0) {
+      String outputDirectory = options.outputDirectory;
+      String outputFilename = options.outputFilename;
+      CreatePdfOptions.Page[] pages = options.pages;
+
+      if (pages.length == 0) {
         throw new Exception("No images provided.");
       }
 
       PdfDocument pdfDocument = new PdfDocument();
 
       try {
-        for (int i = 0; i < pages.size(); ++i) {
-          ReadableMap config = pages.getMap(i);
-          String imagePath = config.getString("imagePath");
+        for (int i = 0; i < pages.length; ++i) {
+          CreatePdfOptions.Page config = pages[i];
+          String imagePath = config.imagePath;
 
           Bitmap image = getBitmapFromPathOrUri(imagePath);
 
@@ -65,10 +68,10 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
             throw new Exception(imagePath + " cannot be decoded into a bitmap.");
           }
 
-          Double pageWidth = config.getDouble("width");
+          Double pageWidth = config.width;
           Integer width = pageWidth != null ? pageWidth.intValue() : image.getWidth();
 
-          Double pageHeight = config.getDouble("height");
+          Double pageHeight = config.height;
           Integer height = pageHeight != null ? pageHeight.intValue() : image.getHeight();
 
           PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo
@@ -80,7 +83,7 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
           Bitmap scaledImage = image;
 
           if(!width.equals(image.getWidth()) || !height.equals(image.getHeight())) {
-            String imageFit = config.getString("imageFit");
+            String imageFit = config.imageFit;
             Point size = new Point(width, height);
 
             scaledImage = ImageScaling.scale(image, size, imageFit);
