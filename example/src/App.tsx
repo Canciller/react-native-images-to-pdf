@@ -15,7 +15,10 @@ export default function App() {
   const [isLoading, setIsLoading] = React.useState(false);
   const [width, setWidth] = React.useState<number | undefined>(594);
   const [height, setHeight] = React.useState<number | undefined>(842);
-  const [imageFit, setImageFit] = React.useState<ImageFit | undefined>('cover');
+  const [backgroundColor, setBackgroundColor] = React.useState('#fff');
+  const [imageFit, setImageFit] = React.useState<ImageFit | undefined>(
+    'contain'
+  );
 
   const parts: string[] = [];
   if (width) {
@@ -45,16 +48,13 @@ export default function App() {
 
         const outputDirectory = resultPickDir.uri;
 
-        const pages = result.assets.map((asset) => {
-          const page: Page = {
-            imagePath: asset.uri as string,
-            imageFit,
-            width,
-            height,
-          };
-
-          return page;
-        });
+        const pages = result.assets.map<Page>((asset) => ({
+          imagePath: asset.uri as string,
+          imageFit,
+          width,
+          height,
+          backgroundColor,
+        }));
 
         await createPdf({
           outputDirectory,
@@ -90,6 +90,12 @@ export default function App() {
           const n = parseFloat(text);
           setHeight(Number.isNaN(n) ? undefined : n);
         }}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Page background color"
+        value={backgroundColor}
+        onChangeText={setBackgroundColor}
       />
       <TextInput
         style={styles.input}

@@ -1,4 +1,5 @@
-import { NativeModules, Platform } from 'react-native';
+import type { ColorValue, ProcessedColorValue } from 'react-native';
+import { NativeModules, Platform, processColor } from 'react-native';
 
 const LINKING_ERROR =
   `The package 'react-native-images-to-pdf' doesn't seem to be linked. Make sure: \n\n` +
@@ -24,7 +25,12 @@ export type Page = {
   imageFit?: ImageFit;
   width?: number;
   height?: number;
+  backgroundColor?: ColorValue;
 };
+
+interface InternalPage extends Omit<Page, 'backgroundColor'> {
+  backgroundColor?: ProcessedColorValue;
+}
 
 export type CreatePdfOptions =
   | {
@@ -46,19 +52,24 @@ export type CreatePdfOptions =
 export function createPdf(options: CreatePdfOptions): Promise<string> {
   const { pages, imagePaths, ...opts } = options;
 
-  const mappedPages = (imagePaths || pages || []).map<Page>((e) => {
+  const internalPages = (imagePaths || pages || []).map<InternalPage>((e) => {
     if (typeof e === 'string') {
       return {
         imagePath: e,
       };
     }
 
-    return e;
+    const { backgroundColor, ...page } = e;
+
+    return {
+      backgroundColor: processColor(backgroundColor) ?? undefined,
+      ...page,
+    };
   });
 
   return ImagesPdf.createPdf({
     ...opts,
-    pages: mappedPages,
+    pages: internalPages,
   });
 }
 
