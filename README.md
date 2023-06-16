@@ -56,10 +56,11 @@ Returns a Promise that resolves to a `string` representing the output path of th
 
 | Property          | Type                      | Required | Default       | Description                                                            |
 |-------------------|---------------------------|----------|---------------|------------------------------------------------------------------------|
-| `imagePath`       | `string`                  |  ✓        |               | Path to the image file to be included in the PDF.                       |
-| `imageFit`        | `ImageFit \| undefined`    |         | `'none'`      | Image fitting option. Possible values: `'none'`, `'fill'`, `'contain'`, `'cover'`. |
-| `width`           | `number \| undefined`      |         | Image width   | Width of the page in pixels. If not specified, it defaults to the width of the image. |
-| `height`          | `number \| undefined`      |         | Image height  | Height of the page in pixels. If not specified, it defaults to the height of the image. |
+| `imagePath`       | `string`                  |  ✓        |               | Path to the image file.                       |
+| `imageFit`        | `ImageFit`    |         | `'none'`      | Image fitting option. Possible values: `'none'`, `'fill'`, `'contain'`, `'cover'`. |
+| `width`           | `number`      |         | Image width   | Width of the page in pixels. |
+| `height`          | `number`      |         | Image height  | Height of the page in pixels. |
+| `backgroundColor`          | `string`      |         | `'white'`  | Background color of the page. |
 
 ## Example
 
