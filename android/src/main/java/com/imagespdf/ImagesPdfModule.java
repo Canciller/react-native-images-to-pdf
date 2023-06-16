@@ -16,7 +16,6 @@ import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.module.annotations.ReactModule;
 
@@ -25,8 +24,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import javax.annotation.Nullable;
 
 @ReactModule(name = ImagesPdfModule.NAME)
 public class ImagesPdfModule extends ReactContextBaseJavaModule {
@@ -68,32 +65,37 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
             throw new Exception(imagePath + " cannot be decoded into a bitmap.");
           }
 
-          Integer pageWidth = config.width;
-          Integer width = pageWidth != null ? pageWidth : image.getWidth();
+          Integer imageWidth = image.getWidth();
+          Integer imageHeight = image.getHeight();
 
-          Integer pageHeight = config.height;
-          Integer height = pageHeight != null ? pageHeight : image.getHeight();
+          Integer pageWidth = config.width != null ? config.width : imageWidth;
+          Integer pageHeight = config.height != null ? config.height : imageHeight;
 
           PdfDocument.PageInfo pageInfo = new PdfDocument.PageInfo
-            .Builder(width, height, i + 1)
+            .Builder(pageWidth, pageHeight, i + 1)
             .create();
 
           PdfDocument.Page page = pdfDocument.startPage(pageInfo);
 
-          Bitmap scaledImage = image;
+          Integer imageMaxWidth = config.imageMaxWidth;
+          Integer imageMaxHeight = config.imageMaxHeight;
 
-          if(!width.equals(image.getWidth()) || !height.equals(image.getHeight())) {
+          if(imageMaxWidth != null || imageMaxHeight != null) {
+            image = ImageScaling.resize(image, imageMaxWidth, imageMaxHeight);
+          }
+
+          if(!pageWidth.equals(imageWidth) || !pageHeight.equals(imageHeight)) {
             ImageFit imageFit = config.imageFit;
-            Point size = new Point(width, height);
+            Point containerSize = new Point(pageWidth, pageHeight);
 
-            scaledImage = ImageScaling.scale(image, size, imageFit);
+            image = ImageScaling.scaleToFit(image, containerSize, imageFit);
           }
 
           Canvas canvas = page.getCanvas();
           if(config.backgroundColor != null) {
             canvas.drawColor(config.backgroundColor);
           }
-          canvas.drawBitmap(scaledImage, 0, 0, null);
+          canvas.drawBitmap(image, 0, 0, null);
 
           pdfDocument.finishPage(page);
         }
