@@ -117,7 +117,7 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
 
       pdfDocument.close();
 
-      promise.resolve(outputUri.getPath());
+      promise.resolve(outputUri.toString());
     } catch (Exception e) {
       Log.e("ImagesPdfModule", e.getLocalizedMessage(), e);
 
