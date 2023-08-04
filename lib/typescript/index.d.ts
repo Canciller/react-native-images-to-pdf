@@ -8,18 +8,8 @@ export type Page = {
     backgroundColor?: ColorValue;
 };
 export type CreatePdfOptions = {
-    outputDirectory: string;
-    outputFilename: string;
-    pages: Array<Page | string>;
-    imagePaths?: undefined;
-} | {
-    outputDirectory: string;
-    outputFilename: string;
-    pages?: undefined;
-    /**
-     * @deprecated Use the `pages` property instead.
-     */
-    imagePaths: string[];
+    outputPath: string;
+    pages: Page[];
 };
 export declare function createPdf(options: CreatePdfOptions): Promise<string>;
 export declare function getDocumentsDirectory(): Promise<string>;
