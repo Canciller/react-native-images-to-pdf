@@ -1,8 +1,13 @@
 import * as React from 'react';
 
-import { createPdf, ImageFit, Page } from 'react-native-images-to-pdf';
+import {
+  createPdf,
+  ImageFit,
+  Page,
+  getDocumentsDirectory,
+} from 'react-native-images-to-pdf';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { pickDirectory } from 'react-native-document-picker';
+import Pdf from 'react-native-pdf';
 import {
   StyleSheet,
   Text,
@@ -12,10 +17,11 @@ import {
 } from 'react-native';
 
 export default function App() {
+  const [uri, setUri] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [width, setWidth] = React.useState<number | undefined>(594);
   const [height, setHeight] = React.useState<number | undefined>(842);
-  const [backgroundColor, setBackgroundColor] = React.useState('red');
+  const [backgroundColor, setBackgroundColor] = React.useState('black');
   const [imageFit, setImageFit] = React.useState<ImageFit | undefined>(
     'contain'
   );
@@ -33,6 +39,7 @@ export default function App() {
 
   const selectImages = async () => {
     setIsLoading(true);
+
     try {
       const result = await launchImageLibrary({
         mediaType: 'photo',
@@ -40,14 +47,6 @@ export default function App() {
       });
 
       if (result.assets) {
-        const resultPickDir = await pickDirectory();
-
-        if (!resultPickDir) {
-          return;
-        }
-
-        const outputDirectory = resultPickDir.uri;
-
         const pages = result.assets.map<Page>((asset) => ({
           imagePath: asset.uri as string,
           imageFit,
@@ -56,18 +55,50 @@ export default function App() {
           backgroundColor,
         }));
 
-        await createPdf({
-          outputDirectory,
-          outputFilename,
+        const documentsDir = await getDocumentsDirectory();
+        const outputPath = `${documentsDir}/${outputFilename}`;
+
+        const uri = await createPdf({
+          outputPath,
           pages,
         });
+
+        console.log('PDF created successfully:', uri);
+
+        setUri(uri);
       }
     } catch (e) {
-      console.error(e);
+      console.error('Failed to create PDF:', e);
     }
 
     setIsLoading(false);
   };
+
+  if (uri) {
+    return (
+      <View style={{ flex: 1, backgroundColor: 'white' }}>
+        <Pdf
+          style={{ flex: 1 }}
+          onError={console.error}
+          source={{
+            uri,
+          }}
+        />
+        <TouchableOpacity
+          style={[
+            styles.button,
+            {
+              margin: 20,
+            },
+          ]}
+          disabled={isLoading}
+          onPress={() => setUri('')}
+        >
+          <Text style={styles.buttonText}>Close</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.root}>
@@ -119,7 +150,12 @@ export default function App() {
       />
 
       <TouchableOpacity
-        style={styles.button}
+        style={[
+          styles.button,
+          {
+            marginBottom: 20,
+          },
+        ]}
         onPress={selectImages}
         disabled={isLoading}
       >
@@ -159,7 +195,6 @@ const styles = StyleSheet.create({
     minHeight: 40,
   },
   button: {
-    marginBottom: 20,
     backgroundColor: '#32a9d9',
     padding: 10,
     borderRadius: 10,
