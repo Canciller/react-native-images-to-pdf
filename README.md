@@ -29,8 +29,7 @@ import { createPdf } from 'react-native-images-to-pdf';
 
 const options = {
   pages: ['/path/to/image1.jpg', '/path/to/image2.jpg'],
-  outputDirectory: '/path/to/output',
-  outputFilename: 'output.pdf',
+  outputPath: '/path/to/output/file.pdf',
 };
 
 createPdf(options)
@@ -46,21 +45,20 @@ Returns a Promise that resolves to a `string` representing the output path of th
 
 #### `CreatePdfOptions`
 
-| Property            | Type       | Description                                                                                                                 |
-| ----------------- | ---------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Property     | Type                    | Description                               |
+| ------------ | ----------------------- | ----------------------------------------- |
 | `pages`      | `Array<Page \| string>` | Pages that should be included in the PDF. |
-| `outputDirectory` | `string`   | The path to the directory where the output PDF file should be saved.                                                        |
-| `outputFilename`  | `string`   | The name of the output PDF file.                                                                                            |
+| `outputPath` | `string`                | The path to the output PDF file.          |
 
 ### `Page`
 
-| Property          | Type                      | Required | Default       | Description                                                            |
-|-------------------|---------------------------|----------|---------------|------------------------------------------------------------------------|
-| `imagePath`       | `string`                  |  ✓        |               | Path to the image file.                       |
-| `imageFit`        | `ImageFit`    |         | `'none'`      | Image fitting option. Possible values: `'none'`, `'fill'`, `'contain'`, `'cover'`. |
-| `width`           | `number`      |         | Image width   | Width of the page in pixels. |
-| `height`          | `number`      |         | Image height  | Height of the page in pixels. |
-| `backgroundColor`          | `string`      |         | `'white'`  | Background color of the page. |
+| Property          | Type       | Required | Default      | Description                                                                        |
+| ----------------- | ---------- | -------- | ------------ | ---------------------------------------------------------------------------------- |
+| `imagePath`       | `string`   | ✓        |              | Path to the image file.                                                            |
+| `imageFit`        | `ImageFit` |          | `'none'`     | Image fitting option. Possible values: `'none'`, `'fill'`, `'contain'`, `'cover'`. |
+| `width`           | `number`   |          | Image width  | Width of the page in pixels.                                                       |
+| `height`          | `number`   |          | Image height | Height of the page in pixels.                                                      |
+| `backgroundColor` | `string`   |          | `'white'`    | Background color of the page.                                                      |
 
 ## Example
 
