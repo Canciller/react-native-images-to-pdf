@@ -4,13 +4,11 @@ import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 
 public class CreatePdfOptions {
-  public String outputDirectory;
-  public String outputFilename;
+  public String outputPath;
   public Page[] pages;
 
   public CreatePdfOptions(ReadableMap options) {
-    outputDirectory = getStringOrThrow(options, "outputDirectory");
-    outputFilename = getStringOrThrow(options, "outputFilename");
+    outputPath = getStringOrThrow(options, "outputPath");
     pages = parsePages(getArrayOrThrow(options, "pages"));
   }
 
