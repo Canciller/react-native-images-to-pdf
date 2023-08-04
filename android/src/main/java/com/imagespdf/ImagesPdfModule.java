@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
+import android.provider.DocumentsContract;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -42,13 +43,14 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
     return NAME;
   }
 
+  static final String MIME_TYPE_PDF = "application/pdf";
+
   @ReactMethod
   public void createPdf(ReadableMap optionsMap, Promise promise) {
     try {
       CreatePdfOptions options = new CreatePdfOptions(optionsMap);
 
-      String outputDirectory = options.outputDirectory;
-      String outputFilename = options.outputFilename;
+      String outputPath = options.outputPath;
       CreatePdfOptions.Page[] pages = options.pages;
 
       if (pages.length == 0) {
@@ -104,10 +106,10 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
         return;
       }
 
-      Uri outputUri = null;
+      String writtenOutputPath = null;
 
       try {
-        outputUri = writePdfDocument(pdfDocument, outputDirectory, outputFilename);
+        writtenOutputPath = writePdfDocument(pdfDocument, outputPath);
       } catch (Exception e) {
         Log.e("ImagesPdfModule", e.getLocalizedMessage(), e);
         promise.reject("PDF_WRITE_ERROR", e.getLocalizedMessage(), e);
@@ -117,7 +119,7 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
 
       pdfDocument.close();
 
-      promise.resolve(outputUri.toString());
+      promise.resolve(writtenOutputPath);
     } catch (Exception e) {
       Log.e("ImagesPdfModule", e.getLocalizedMessage(), e);
 
@@ -131,38 +133,21 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
     promise.resolve(docsDir);
   }
 
-  Uri writePdfDocument(PdfDocument pdfDocument, String outputDirectory, String outputFilename) throws IOException {
+  String writePdfDocument(PdfDocument pdfDocument, String outputPath) throws IOException {
     OutputStream outputStream = null;
     Uri outputUri = null;
+    String writtenOutputPath = null;
 
     try {
-      Uri uri = Uri.parse(outputDirectory);
-      String mimeTypePdf = "application/pdf";
+      outputUri = Uri.parse(outputPath);
+      writtenOutputPath = outputUri.getPath();
 
-      String scheme = uri.getScheme();
+      String scheme = outputUri.getScheme();
 
-      if (scheme != null && scheme.equals(ContentResolver.SCHEME_CONTENT)) {
-        // TODO: Fix warnings: Method invocation may produce 'NullPointerException'.
-
-        DocumentFile dirFile = DocumentFile
-          .fromTreeUri(getReactApplicationContext().getApplicationContext(), uri);
-
-        DocumentFile pdfFile = dirFile
-          .createFile(mimeTypePdf, outputFilename);
-
-        outputUri = pdfFile.getUri();
-
-        outputStream = getReactApplicationContext()
-          .getContentResolver()
-          .openOutputStream(outputUri);
-      } else if (scheme == null || scheme.equals(ContentResolver.SCHEME_FILE)) {
-        outputUri = uri.buildUpon()
-          .appendPath(outputFilename)
-          .build();
-
-        outputStream = new FileOutputStream(outputUri.getPath());
+      if (scheme == null || scheme.equals(ContentResolver.SCHEME_FILE)) {
+        outputStream = new FileOutputStream(writtenOutputPath);
       } else {
-        throw new UnsupportedOperationException("Unsupported scheme: " + uri.getScheme());
+        throw new UnsupportedOperationException("Unsupported scheme: " + scheme);
       }
 
       pdfDocument.writeTo(outputStream);
@@ -172,7 +157,7 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
       }
     }
 
-    return outputUri;
+    return writtenOutputPath;
   }
 
   Bitmap getBitmapFromPathOrUri(String pathOrUri) throws IOException {

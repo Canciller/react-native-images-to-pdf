@@ -12,8 +12,7 @@ class ImagesPdf: NSObject {
     do {
       let createPdfOptions = try CreatePdfOptions(options)
       
-      let outputDirectory = createPdfOptions.outputDirectory
-      let outputFilename = createPdfOptions.outputFilename
+      let outputPath = createPdfOptions.outputPath
       let pages = createPdfOptions.pages
       
       if pages.isEmpty {
@@ -22,11 +21,10 @@ class ImagesPdf: NSObject {
       
       let data = try renderPdfData(pages)
       
-      let outputUrl = try writePdfFile(data: data,
-                                       outputDirectory: outputDirectory,
-                                       outputFilename: outputFilename)
+      let writtenOutputPath = try writePdfFile(data: data,
+                                       outputPath: outputPath)
       
-      resolve(outputUrl.absoluteString)
+      resolve(writtenOutputPath)
     } catch CreatePdfError.noImagesProvided {
       reject(E_NO_IMAGES_PROVIDED,
              "No images provided.",
@@ -107,21 +105,10 @@ class ImagesPdf: NSObject {
     return data
   }
   
-  func writePdfFile(data: Data, outputDirectory: String, outputFilename: String) throws -> URL {
+  func writePdfFile(data: Data, outputPath: String) throws -> String {
     let fileManager = FileManager.default
     
-    let directoryUrl = buildUrl(paths: [outputDirectory])!
-    let directoryPath = directoryUrl.path
-    
-    if !fileManager.fileExists(atPath: directoryPath) {
-      throw CreatePdfError.outputDirectoryDoesNotExist
-    }
-    
-    if !fileManager.isWritableFile(atPath: directoryPath) {
-      throw CreatePdfError.outputDirectoryIsNotWritable
-    }
-    
-    let url = buildUrl(paths: [outputDirectory, outputFilename])!
+    let url = buildUrl(paths: [outputPath])!
     
     do {
       try data.write(to: url)
@@ -129,7 +116,7 @@ class ImagesPdf: NSObject {
       throw CreatePdfError.pdfWriteError(error: error)
     }
     
-    return url
+    return url.absoluteString
   }
   
   func buildUrl(paths: [String]) -> URL? {

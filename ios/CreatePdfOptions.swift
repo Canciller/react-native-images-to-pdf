@@ -22,16 +22,14 @@ struct Page: Decodable {
 }
 
 class CreatePdfOptions: Decodable {
-  let outputDirectory: String
-  let outputFilename: String
+  let outputPath: String
   let pages: [Page]
   
   init(_ options: NSDictionary) throws {
     let jsonData = try JSONSerialization.data(withJSONObject: options, options: [])
     let pdfCreateOptions = try JSONDecoder().decode(CreatePdfOptions.self, from: jsonData)
     
-    self.outputDirectory = pdfCreateOptions.outputDirectory
-    self.outputFilename = pdfCreateOptions.outputFilename
+    self.outputPath = pdfCreateOptions.outputPath
     self.pages = pdfCreateOptions.pages
   }
 }

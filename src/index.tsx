@@ -32,33 +32,15 @@ interface InternalPage extends Omit<Page, 'backgroundColor'> {
   backgroundColor?: ProcessedColorValue;
 }
 
-export type CreatePdfOptions =
-  | {
-      outputDirectory: string;
-      outputFilename: string;
-      pages: Array<Page | string>;
-      imagePaths?: undefined;
-    }
-  | {
-      outputDirectory: string;
-      outputFilename: string;
-      pages?: undefined;
-      /**
-       * @deprecated Use the `pages` property instead.
-       */
-      imagePaths: string[];
-    };
+export type CreatePdfOptions = {
+  outputPath: string;
+  pages: Page[];
+};
 
 export function createPdf(options: CreatePdfOptions): Promise<string> {
-  const { pages, imagePaths, ...opts } = options;
+  const { pages, ...opts } = options;
 
-  const internalPages = (imagePaths || pages || []).map<InternalPage>((e) => {
-    if (typeof e === 'string') {
-      return {
-        imagePath: e,
-      };
-    }
-
+  const internalPages = pages.map<InternalPage>((e) => {
     const { backgroundColor, ...page } = e;
 
     return {
