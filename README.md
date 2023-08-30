@@ -15,6 +15,10 @@ Easily generate PDF files from images in React Native.
 ## Installation
 
 ```sh
+npm install react-native-images-to-pdf
+```
+or
+```sh
 yarn add react-native-images-to-pdf
 ```
 
@@ -26,16 +30,18 @@ Run `pod install` in the `ios` directory.
 
 ```javascript
 import { createPdf } from 'react-native-images-to-pdf';
+import RNFetchBlob from 'react-native-blob-util';
 
 const options = {
   pages: ['/path/to/image1.jpg', '/path/to/image2.jpg'],
-  outputPath: '/path/to/output/file.pdf',
+  outputPath: `${RNFetchBlob.fs.dirs.DocumentDir}/file.pdf`,
 };
 
 createPdf(options)
   .then((path) => console.log(`PDF created successfully: ${path}`))
   .catch((error) => console.log(`Failed to create PDF: ${error}`));
 ```
+The example is using [`react-native-blob-util`](https://github.com/RonRadtke/react-native-blob-util), but you can choose any other library to achieve the same functionality.
 
 ## API
 
