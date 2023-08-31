@@ -17,7 +17,9 @@ Easily generate PDF files from images in React Native.
 ```sh
 npm install react-native-images-to-pdf
 ```
+
 or
+
 ```sh
 yarn add react-native-images-to-pdf
 ```
@@ -30,18 +32,19 @@ Run `pod install` in the `ios` directory.
 
 ```javascript
 import { createPdf } from 'react-native-images-to-pdf';
-import RNFetchBlob from 'react-native-blob-util';
+import RNBlobUtil from 'react-native-blob-util';
 
 const options = {
   pages: ['/path/to/image1.jpg', '/path/to/image2.jpg'],
-  outputPath: `${RNFetchBlob.fs.dirs.DocumentDir}/file.pdf`,
+  outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/file.pdf`,
 };
 
 createPdf(options)
   .then((path) => console.log(`PDF created successfully: ${path}`))
   .catch((error) => console.log(`Failed to create PDF: ${error}`));
 ```
-The example is using [`react-native-blob-util`](https://github.com/RonRadtke/react-native-blob-util), but you can choose any other library to achieve the same functionality.
+
+This is using [`react-native-blob-util`](https://github.com/RonRadtke/react-native-blob-util) to get a valid `outputPath`, but you can choose any other library to achieve the same functionality.
 
 ## API
 
@@ -56,6 +59,12 @@ Returns a Promise that resolves to a `string` representing the output path of th
 | `pages`      | `Array<Page \| string>` | Pages that should be included in the PDF. |
 | `outputPath` | `string`                | The path to the output PDF file.          |
 
+#### Valid `outputPath`
+
+| Usage                              | Description                    | iOS | Android |
+| ---------------------------------- | ------------------------------ | --- | ------- |
+| `file:///absolute/path/to/xxx.pdf` | Save PDF to local file system. | ✓   | ✓       |
+
 ### `Page`
 
 | Property          | Type       | Required | Default      | Description                                                                        |
@@ -65,6 +74,13 @@ Returns a Promise that resolves to a `string` representing the output path of th
 | `width`           | `number`   |          | Image width  | Width of the page in pixels.                                                       |
 | `height`          | `number`   |          | Image height | Height of the page in pixels.                                                      |
 | `backgroundColor` | `string`   |          | `'white'`    | Background color of the page.                                                      |
+
+#### Valid `imagePath`
+
+| Usage                                | Description                        | iOS | Android |
+| ------------------------------------ | ---------------------------------- | --- | ------- |
+| `file:///absolute/path/to/image.xxx` | Load image from local file system. | ✓   | ✓       |
+| `data:image/xxx;base64,iVBORw...`    | Load image from base64 string.     | ✓   | ✓       |
 
 ## Example
 

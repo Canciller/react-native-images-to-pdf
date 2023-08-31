@@ -7,27 +7,24 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.pdf.PdfDocument;
 import android.net.Uri;
-import android.provider.DocumentsContract;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.documentfile.provider.DocumentFile;
 
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
-import com.facebook.react.bridge.ReadableArray;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.module.annotations.ReactModule;
+
+import org.apache.commons.codec.binary.Base64;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-
-import javax.annotation.Nullable;
 
 @ReactModule(name = ImagesPdfModule.NAME)
 public class ImagesPdfModule extends ReactContextBaseJavaModule {
@@ -84,7 +81,7 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
 
           Bitmap scaledImage = image;
 
-          if(!width.equals(image.getWidth()) || !height.equals(image.getHeight())) {
+          if (!width.equals(image.getWidth()) || !height.equals(image.getHeight())) {
             ImageFit imageFit = config.imageFit;
             Point size = new Point(width, height);
 
@@ -92,7 +89,7 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
           }
 
           Canvas canvas = page.getCanvas();
-          if(config.backgroundColor != null) {
+          if (config.backgroundColor != null) {
             canvas.drawColor(config.backgroundColor);
           }
           canvas.drawBitmap(scaledImage, 0, 0, null);
@@ -165,25 +162,32 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
     InputStream inputStream = null;
 
     try {
-      Uri uri = Uri.parse(pathOrUri);
+      String base64Image = pathOrUri.replaceFirst("^data:image/[a-z]+;base64,", "");
 
-      String scheme = uri.getScheme();
-
-      if (scheme != null && scheme.equals(ContentResolver.SCHEME_CONTENT)) {
-        ContentResolver contentResolver = getReactApplicationContext()
-          .getContentResolver();
-
-        inputStream = contentResolver
-          .openInputStream(uri);
-      } else if (scheme == null || scheme.equals(ContentResolver.SCHEME_FILE)) {
-        inputStream = new FileInputStream(uri.getPath());
+      if (Base64.isBase64(base64Image)) {
+        byte[] decoded = Base64.decodeBase64(base64Image);
+        bitmap = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
       } else {
-        throw new UnsupportedOperationException("Unsupported scheme: " + uri.getScheme());
-      }
+        Uri uri = Uri.parse(pathOrUri);
 
-      if (inputStream != null) {
-        bitmap = BitmapFactory
-          .decodeStream(inputStream);
+        String scheme = uri.getScheme();
+
+        if (scheme != null && scheme.equals(ContentResolver.SCHEME_CONTENT)) {
+          ContentResolver contentResolver = getReactApplicationContext()
+            .getContentResolver();
+
+          inputStream = contentResolver
+            .openInputStream(uri);
+        } else if (scheme == null || scheme.equals(ContentResolver.SCHEME_FILE)) {
+          inputStream = new FileInputStream(uri.getPath());
+        } else {
+          throw new UnsupportedOperationException("Unsupported scheme: " + uri.getScheme());
+        }
+
+        if (inputStream != null) {
+          bitmap = BitmapFactory
+            .decodeStream(inputStream);
+        }
       }
     } finally {
       if (inputStream != null) {

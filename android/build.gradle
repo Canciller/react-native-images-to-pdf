@@ -66,7 +66,8 @@ dependencies {
   // For > 0.71, this will be replaced by `com.facebook.react:react-android:$version` by react gradle plugin
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
-    implementation 'androidx.documentfile:documentfile:1.0.1'
+  implementation 'androidx.documentfile:documentfile:1.0.1'
+  implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
 }
 
 if (isNewArchitectureEnabled()) {
