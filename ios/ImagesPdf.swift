@@ -58,7 +58,7 @@ class ImagesPdf: NSObject {
     
     let data = renderer.pdfData {(context) in
       for page in pages {
-        let imageUrl = buildUrl(paths: [page.imagePath])!
+        let imageUrl = URL(string: page.imagePath)!
         var image: UIImage? = nil
         
         do {
@@ -106,9 +106,7 @@ class ImagesPdf: NSObject {
   }
   
   func writePdfFile(data: Data, outputPath: String) throws -> String {
-    let fileManager = FileManager.default
-    
-    let url = buildUrl(paths: [outputPath])!
+    let url = URL(string: outputPath)!
     
     do {
       try data.write(to: url)
@@ -117,29 +115,6 @@ class ImagesPdf: NSObject {
     }
     
     return url.absoluteString
-  }
-  
-  func buildUrl(paths: [String]) -> URL? {
-    if paths.isEmpty {
-      return nil
-    }
-    
-    var url = URL(string: paths[0])!
-    
-    if url.scheme == nil {
-      let fileScheme = URL(fileURLWithPath: "").scheme
-      
-      var urlComponent = URLComponents(string: paths[0])!
-      urlComponent.scheme = fileScheme
-      
-      url = urlComponent.url!
-    }
-    
-    for p in paths.dropFirst() {
-      url.appendPathComponent(p)
-    }
-    
-    return url
   }
   
   @objc

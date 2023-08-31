@@ -43,18 +43,31 @@ export default function App() {
       });
 
       if (result.assets) {
-        const pages = result.assets.map<Page>((asset) => ({
-          imagePath: asset.uri as string,
-          imageFit,
-          width,
-          height,
-          backgroundColor,
-        }));
+        const pages: Page[] = [];
 
-        const outputPath = `file://${RNBlobUtil.fs.dirs.DocumentDir}/${outputFilename}`;
+        for (let asset of result.assets) {
+          const uri = asset.uri as string;
+
+          // const mimeType = asset.type as string;
+          //
+          // const base64 = await RNBlobUtil.fs.readFile(
+          //   uri.replace('file://', ''),
+          //   'base64'
+          // );
+          //
+          // const imagePath = `data:${mimeType};base64,${base64}`;
+
+          pages.push({
+            imagePath: uri,
+            imageFit,
+            width,
+            height,
+            backgroundColor,
+          });
+        }
 
         const uri = await createPdf({
-          outputPath,
+          outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/${outputFilename}`,
           pages,
         });
 
