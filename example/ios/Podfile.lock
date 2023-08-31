@@ -331,11 +331,9 @@ PODS:
     - glog
   - react-native-blob-util (0.18.6):
     - React-Core
-  - react-native-document-picker (8.1.3):
-    - React-Core
   - react-native-image-picker (5.1.0):
     - React-Core
-  - react-native-images-to-pdf (0.0.4):
+  - react-native-images-to-pdf (0.1.0):
     - React-Core
   - react-native-pdf (6.7.1):
     - React-Core
@@ -475,7 +473,6 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-blob-util (from `../node_modules/react-native-blob-util`)
-  - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
   - react-native-images-to-pdf (from `../..`)
   - react-native-pdf (from `../node_modules/react-native-pdf`)
@@ -555,8 +552,6 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-blob-util:
     :path: "../node_modules/react-native-blob-util"
-  react-native-document-picker:
-    :path: "../node_modules/react-native-document-picker"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
   react-native-images-to-pdf:
@@ -627,9 +622,8 @@ SPEC CHECKSUMS:
   React-jsinspector: 9f7c9137605e72ca0343db4cea88006cb94856dd
   React-logger: 957e5dc96d9dbffc6e0f15e0ee4d2b42829ff207
   react-native-blob-util: c5430d091e011b7fc57f888c356da2a2ff8dc8ad
-  react-native-document-picker: 958e2bc82e128be69055be261aeac8d872c8d34c
   react-native-image-picker: c33d4e79f0a14a2b66e5065e14946ae63749660b
-  react-native-images-to-pdf: 8102a567ec8b46e64297e633124bbd6f2c7b6138
+  react-native-images-to-pdf: 52c7735ec408cf3d8e81be026b36c62c7a18aaa3
   react-native-pdf: 7c0e91ada997bac8bac3bb5bea5b6b81f5a3caae
   React-perflogger: af8a3d31546077f42d729b949925cc4549f14def
   React-RCTActionSheet: 57cc5adfefbaaf0aae2cf7e10bccd746f2903673

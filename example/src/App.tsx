@@ -1,12 +1,8 @@
 import * as React from 'react';
 
-import {
-  createPdf,
-  ImageFit,
-  Page,
-  getDocumentsDirectory,
-} from 'react-native-images-to-pdf';
+import { createPdf, ImageFit, Page } from 'react-native-images-to-pdf';
 import { launchImageLibrary } from 'react-native-image-picker';
+import RNBlobUtil from 'react-native-blob-util';
 import Pdf from 'react-native-pdf';
 import {
   StyleSheet,
@@ -55,8 +51,7 @@ export default function App() {
           backgroundColor,
         }));
 
-        const documentsDir = await getDocumentsDirectory();
-        const outputPath = `${documentsDir}/${outputFilename}`;
+        const outputPath = `file://${RNBlobUtil.fs.dirs.DocumentDir}/${outputFilename}`;
 
         const uri = await createPdf({
           outputPath,
