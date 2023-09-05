@@ -56,7 +56,7 @@ Returns a Promise that resolves to a `string` representing the output path of th
 
 | Property     | Type                    | Description                               |
 | ------------ | ----------------------- | ----------------------------------------- |
-| `pages`      | `Array<Page \| string>` | Pages that should be included in the PDF. |
+| `pages`      | `Page[]`                | Pages that should be included in the PDF. |
 | `outputPath` | `string`                | The path to the output PDF file.          |
 
 #### Valid `outputPath`
