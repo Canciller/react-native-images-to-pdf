@@ -35,7 +35,10 @@ import { createPdf } from 'react-native-images-to-pdf';
 import RNBlobUtil from 'react-native-blob-util';
 
 const options = {
-  pages: ['/path/to/image1.jpg', '/path/to/image2.jpg'],
+  pages: [
+    { imagePath: '/path/to/image1.jpg' },
+    { imagePath: '/path/to/image2.jpg' }
+  ],
   outputPath: `file://${RNBlobUtil.fs.dirs.DocumentDir}/file.pdf`,
 };
 
