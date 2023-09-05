@@ -30,6 +30,8 @@ Run `pod install` in the `ios` directory.
 
 ## Usage
 
+### Example using [`react-native-blob-util`](https://github.com/RonRadtke/react-native-blob-util)
+
 ```javascript
 import { createPdf } from 'react-native-images-to-pdf';
 import RNBlobUtil from 'react-native-blob-util';
@@ -47,7 +49,28 @@ createPdf(options)
   .catch((error) => console.log(`Failed to create PDF: ${error}`));
 ```
 
-This is using [`react-native-blob-util`](https://github.com/RonRadtke/react-native-blob-util) to get a valid `outputPath`, but you can choose any other library to achieve the same functionality.
+This example is using [`react-native-blob-util`](https://github.com/RonRadtke/react-native-blob-util) to get a valid `outputPath`, but you can choose any other library to achieve the same functionality.
+
+### Example using [`react-native-document-scanner-plugin`](https://github.com/websitebeaver/react-native-document-scanner-plugin)
+
+```javascript
+import { createPdf } from 'react-native-images-to-pdf';
+import DocumentScanner from 'react-native-document-scanner-plugin';
+
+DocumentScanner.scanDocument()
+  .then(({scannedImages}) => {
+    if (!scannedImages?.length) {
+      throw new Error('No images scanned');
+    }
+
+    return createPdf({
+      pages: scannedImages.map(imagePath => ({ imagePath })),
+      outputPath: `file:///path/to/output/file.pdf`,
+    });
+  })
+  .then(path => console.log(`PDF created successfully: ${path}`))
+  .catch(error => console.log(`Failed to create PDF: ${error}`));
+```
 
 ## API
 
