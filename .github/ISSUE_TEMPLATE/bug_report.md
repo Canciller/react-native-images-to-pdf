@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Create a report to help us improve.
-title: "[BUG]"
+title: ''
 labels: bug
 assignees: Canciller
 
@@ -13,12 +13,12 @@ assignees: Canciller
 Provide a clear and concise description of what the bug is.
 -->
 
-## Reproducible sample code
+## Reproducible repository
 
 <!--
-- You must provide a **minimal and easy-to-run** reproduction of your issue - [how to create a minimal reproduction?](https://stackoverflow.com/help/mcve). I do not have time to try reproduce bugs myself.
+- You must provide a **minimal and easy-to-run** repo with reproduction of your issue. I do not have time to try reproduce bugs myself.
 - If the bug involves certain file, please attach the file in the bug report.
-- Provide a code snippet or link to a repo that reproduces the bug.
+- Provide a link to a repo that reproduces the bug.
 - Provide other samples: error messages / stack traces, screenshots, gifs, as suitable.
 -->
 
