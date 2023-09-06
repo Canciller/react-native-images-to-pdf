@@ -67,7 +67,7 @@ dependencies {
   //noinspection GradleDynamicVersion
   implementation "com.facebook.react:react-native:+"
   implementation 'androidx.documentfile:documentfile:1.0.1'
-  implementation group: 'commons-codec', name: 'commons-codec', version: '1.15'
+  implementation "com.google.guava:guava:32.1.2-android"
 }
 
 if (isNewArchitectureEnabled()) {
