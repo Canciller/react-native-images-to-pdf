@@ -17,8 +17,7 @@ import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.ReadableMap;
 import com.facebook.react.module.annotations.ReactModule;
-
-import org.apache.commons.codec.binary.Base64;
+import com.google.common.io.BaseEncoding;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -162,11 +161,16 @@ public class ImagesPdfModule extends ReactContextBaseJavaModule {
     InputStream inputStream = null;
 
     try {
-      String base64Image = pathOrUri.replaceFirst("^data:image/[a-z]+;base64,", "");
+      byte[] base64Decoded = null;
 
-      if (Base64.isBase64(base64Image)) {
-        byte[] decoded = Base64.decodeBase64(base64Image);
-        bitmap = BitmapFactory.decodeByteArray(decoded, 0, decoded.length);
+      try {
+        String base64Str = pathOrUri.replaceFirst("^data:image/[a-z]+;base64,", "");
+        base64Decoded = BaseEncoding.base64().decode(base64Str);
+      } catch (IllegalArgumentException ignored) {
+      }
+
+      if (base64Decoded != null) {
+        bitmap = BitmapFactory.decodeByteArray(base64Decoded, 0, base64Decoded.length);
       } else {
         Uri uri = Uri.parse(pathOrUri);
 
