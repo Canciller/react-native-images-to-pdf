@@ -1,6 +1,6 @@
 {
   "name": "react-native-images-to-pdf",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Easily generate PDF files from images in React Native.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
