@@ -1,9 +1,9 @@
 ---
 name: Question
 about: Use this if there is something not clear about the code or its docs.
-title: "[QUESTION]"
+title: ''
 labels: question
-assignees: Canciller
+assignees: ''
 
 ---
 
